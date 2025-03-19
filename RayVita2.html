@@ -1,0 +1,3741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RayVita - Health Digital Twin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Font imports */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;700&display=swap');
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --accent: #f43f5e;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header and Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            padding: 10px 0;
+            background-color: rgba(255, 255, 255, 0.98);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            transition: padding 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .lang-toggle, .mobile-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .lang-toggle {
+            margin-left: 2rem;
+        }
+
+        .lang-toggle i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(249, 250, 251, 0.8), rgba(248, 250, 252, 0.8));
+        }
+
+        .hero-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .hero-content {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 20px;
+        }
+
+        .hero-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .hero-device {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            transform: perspective(1000px) rotateY(-5deg);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-device:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .health-data-particle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary);
+            animation: float 3s infinite ease-in-out;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .health-data-particle:nth-child(1) {
+            top: 10%;
+            left: -15%;
+            animation-delay: 0s;
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .health-data-particle:nth-child(2) {
+            top: 60%;
+            left: -20%;
+            animation-delay: 0.5s;
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .health-data-particle:nth-child(3) {
+            top: 20%;
+            right: -15%;
+            animation-delay: 1s;
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .health-data-particle:nth-child(4) {
+            top: 70%;
+            right: -10%;
+            animation-delay: 1.5s;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            position: relative;
+            color: var(--primary);
+        }
+
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(37, 99, 235, 0.1);
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        .hero h2 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: var(--gray);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 26px;
+            margin-left: 15px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(37, 99, 235, 0.05);
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            border-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 0 0 5px 0;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: var(--primary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 100px 0;
+            background-color: rgba(248, 250, 252, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-it-works-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .how-it-works-content {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 50px;
+        }
+
+        .how-it-works-steps {
+            margin-top: 40px;
+        }
+
+        .step-item {
+            display: flex;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .step-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .step-info p {
+            color: var(--gray);
+        }
+
+        .how-it-works-visual {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .twin-visual {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .human-model {
+            position: absolute;
+            width: 240px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+            transform: rotateY(-15deg) translateZ(30px);
+            transition: all 0.5s ease;
+        }
+
+        .digital-twin {
+            position: absolute;
+            width: 240px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+            transform: rotateY(15deg) translateZ(-30px) translateX(100px);
+            transition: all 0.5s ease;
+            opacity: 0.8;
+        }
+
+        .human-outline, .twin-outline {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: white;
+            transition: all 0.5s ease;
+        }
+
+        .human-outline {
+            border: 3px solid var(--primary);
+        }
+
+        .twin-outline {
+            border: 3px solid var(--secondary);
+        }
+
+        .human-detail {
+            position: absolute;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            color: var(--dark);
+            max-width: 180px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .human-detail.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .human-detail:nth-child(2) {
+            top: 20%;
+            left: -80px;
+            transition-delay: 0.2s;
+        }
+
+        .human-detail:nth-child(3) {
+            top: 50%;
+            left: -100px;
+            transition-delay: 0.4s;
+        }
+
+        .human-detail:nth-child(4) {
+            top: 80%;
+            left: -80px;
+            transition-delay: 0.6s;
+        }
+
+        .twin-detail {
+            position: absolute;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            color: var(--dark);
+            max-width: 180px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .twin-detail.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .twin-detail:nth-child(2) {
+            top: 20%;
+            right: -80px;
+            transition-delay: 0.3s;
+        }
+
+        .twin-detail:nth-child(3) {
+            top: 50%;
+            right: -100px;
+            transition-delay: 0.5s;
+        }
+
+        .twin-detail:nth-child(4) {
+            top: 80%;
+            right: -80px;
+            transition-delay: 0.7s;
+        }
+
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            left: 35%;
+            width: 30%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+
+        .connection-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: flowDot 2s infinite;
+        }
+
+        @keyframes flowDot {
+            0% {
+                left: 0;
+                background: var(--primary);
+            }
+            100% {
+                left: 100%;
+                background: var(--secondary);
+            }
+        }
+
+        /* Interactive Demo Section */
+        .interactive-demo {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .demo-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo-phone {
+            flex: 0 0 320px;
+            height: 650px;
+            background: #111;
+            border-radius: 40px;
+            padding: 15px;
+            margin: 0 auto 40px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .demo-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #111;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        .scan-interface, .health-metrics {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 50px 20px 20px;
+            transition: transform 0.5s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .health-metrics {
+            transform: translateX(100%);
+            background: white;
+        }
+
+        .scan-header, .metrics-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .scan-header h3, .metrics-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .scan-header p, .metrics-header p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .scan-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scan-icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-icon svg {
+            width: 70px;
+            height: 70px;
+            color: var(--primary);
+        }
+
+        .scan-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: scan 2s linear infinite;
+            opacity: 0;
+        }
+
+        .scanning .scan-ring {
+            opacity: 1;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .scan-button {
+            width: 180px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .scan-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .scan-button:active {
+            transform: translateY(0);
+        }
+
+        .scan-button i {
+            margin-right: 8px;
+        }
+
+        .scan-status {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .metrics-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .metrics-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .metrics-body::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .metrics-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .heart-rate-graph {
+            height: 120px;
+            margin-bottom: 25px;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .graph-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 0.8rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .graph-value {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .graph-content {
+            width: 100%;
+            height: 70px;
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .metric-item {
+            padding: 15px;
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateX(5px);
+        }
+
+        .metric-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-name {
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .good-value {
+            color: var(--success);
+        }
+
+        .warning-value {
+            color: var(--warning);
+        }
+
+        .danger-value {
+            color: var(--danger);
+        }
+
+        .metrics-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: var(--light-gray);
+            color: var(--dark);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .back-button:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .demo-info {
+            flex: 1;
+            min-width: 300px;
+            padding-left: 50px;
+        }
+
+        .demo-features {
+            margin-top: 40px;
+        }
+
+        .demo-feature {
+            display: flex;
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .demo-feature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .demo-feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .demo-feature-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .demo-feature-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Health Quiz Section */
+        .health-quiz {
+            padding: 100px 0;
+            background-color: rgba(248, 250, 252, 0.8);
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+
+        .quiz-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .quiz-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .quiz-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: var(--light-gray);
+            z-index: 0;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            background: var(--light-gray);
+            color: var(--gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-step.active .step-circle, .quiz-step.done .step-circle {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quiz-step.done .step-circle {
+            background: var(--success);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-step.active .step-label, .quiz-step.done .step-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .quiz-content {
+            min-height: 300px;
+        }
+
+        .quiz-question {
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .quiz-option input {
+            margin-right: 10px;
+        }
+
+        .quiz-range {
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .range-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--light-gray);
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .prev-btn, .next-btn, .submit-btn {
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+        }
+
+        .prev-btn {
+            background: var(--light-gray);
+            color: var(--gray);
+        }
+
+        .prev-btn:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .next-btn, .submit-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .next-btn:hover, .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .quiz-results {
+            text-align: center;
+        }
+
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 3rem;
+            color: var(--success);
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .results-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .results-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 40px;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .testimonials-container {
+            position: relative;
+        }
+
+        .testimonials-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial {
+            flex: 0 0 100%;
+            padding: 0 20px;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5rem;
+            color: rgba(37, 99, 235, 0.1);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial-content {
+            font-size: 1.1rem;
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+
+        .author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .testimonial-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .testimonial-arrow:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .arrow-prev {
+            left: -25px;
+        }
+
+        .arrow-next {
+            right: -25px;
+        }
+
+        /* Download Section */
+        .download {
+            padding: 100px 0;
+            background: url('/api/placeholder/1920/400') center/cover no-repeat;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+
+        .download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(6, 182, 212, 0.9));
+            z-index: 0;
+        }
+
+        .download-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .download h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .download p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .app-btn {
+            display: flex;
+            align-items: center;
+            background: white;
+            color: var(--dark);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-btn i {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .app-btn-text {
+            text-align: left;
+        }
+
+        .app-btn-text span {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .app-btn-text strong {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background: rgba(248, 250, 252, 0.8);
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .faq-question.active {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .faq-question i {
+            transform: rotate(0deg);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 300px;
+        }
+
+        .faq-answer p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 80px 0 30px;
+            background-color: var(--dark);
+            color: white;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .footer-logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: white;
+        }
+
+        .footer-logo-text span {
+            color: var(--primary);
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links ul li a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-links ul li a i {
+            margin-right: 8px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .footer-contact p {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-contact p i {
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+
+        .footer-newsletter p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            height: 45px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px 0 0 5px;
+            padding: 0 15px;
+            color: white;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .newsletter-btn {
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
+            border: none;
+            border-radius: 0 5px 5px 0;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Floating Chat */
+        .floating-chat {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .floating-chat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 999;
+            transform: scale(0);
+            opacity: 0;
+            transform-origin: bottom right;
+            transition: all 0.3s ease;
+        }
+
+        .chat-window.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .chat-title h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(248, 250, 252, 0.8);
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .bot-message {
+            align-items: flex-start;
+        }
+
+        .bot-message .message-content {
+            background: white;
+            color: var(--dark);
+            border-top-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-message {
+            align-items: flex-end;
+        }
+
+        .user-message .message-content {
+            background: var(--primary);
+            color: white;
+            border-top-right-radius: 5px;
+        }
+
+        .user-message .message-time {
+            text-align: right;
+        }
+
+        .chat-footer {
+            padding: 15px 20px;
+            background: white;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .chat-input {
+            flex: 1;
+            height: 40px;
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            padding: 0 15px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .chat-send {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* Language Switcher */
+        .language-dropdown {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 150px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .language-option {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .language-option:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .language-option.active {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .language-flag {
+            width: 20px;
+            height: 15px;
+            margin-right: 10px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .language-name {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: white;
+            z-index: 1001;
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu ul li {
+            margin-bottom: 15px;
+        }
+
+        .mobile-menu ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: block;
+            padding: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu ul li a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .mobile-menu-lang {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .mobile-lang-option {
+            padding: 10px 15px;
+            border-radius: 5px;
+            background: rgba(248, 250, 252, 0.8);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-lang-option:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .mobile-lang-option.active {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .mobile-menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animation Classes */
+        .fadeIn {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .slideUp {
+            animation: slideUp 1s ease forwards;
+        }
+
+        .slideDown {
+            animation: slideDown 1s ease forwards;
+        }
+
+        .slideLeft {
+            animation: slideLeft 1s ease forwards;
+        }
+
+        .slideRight {
+            animation: slideRight 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideLeft {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content, .hero-image {
+                padding: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .how-it-works-content {
+                padding-right: 20px;
+            }
+
+            .human-detail, .twin-detail {
+                max-width: 150px;
+                font-size: 0.8rem;
+            }
+
+            .human-detail:nth-child(2), .twin-detail:nth-child(2) {
+                left: -60px;
+                right: -60px;
+            }
+
+            .human-detail:nth-child(3), .twin-detail:nth-child(3) {
+                left: -70px;
+                right: -70px;
+            }
+
+            .human-detail:nth-child(4), .twin-detail:nth-child(4) {
+                left: -60px;
+                right: -60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 15px 0;
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .lang-toggle {
+                margin-left: 0;
+                margin-right: 15px;
+            }
+
+            .hero {
+                padding-top: 100px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 1rem;
+            }
+
+            .hero-container {
+                flex-direction: column;
+            }
+
+            .hero-content {
+                text-align: center;
+                padding-right: 0;
+                margin-bottom: 40px;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .how-it-works-container {
+                flex-direction: column;
+            }
+
+            .how-it-works-content {
+                padding-right: 0;
+                margin-bottom: 50px;
+            }
+
+            .demo-container {
+                flex-direction: column;
+            }
+
+            .demo-info {
+                padding-left: 0;
+                margin-top: 50px;
+            }
+
+            .testimonial-arrow {
+                display: none;
+            }
+
+            .download h2 {
+                font-size: 2rem;
+            }
+
+            .download p {
+                font-size: 1rem;
+            }
+
+            .app-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-window {
+                width: 300px;
+                height: 450px;
+                bottom: 80px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+
+            .twin-visual {
+                height: 400px;
+            }
+
+            .human-model, .digital-twin {
+                width: 180px;
+            }
+
+            .human-detail, .twin-detail {
+                display: none;
+            }
+
+            .quiz-steps {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .quiz-step {
+                flex: 0 0 auto;
+                width: 30%;
+            }
+
+            .quiz-step:not(:last-child)::after {
+                display: none;
+            }
+
+            .chat-window {
+                width: calc(100% - 30px);
+                right: 15px;
+            }
+
+            .floating-chat {
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-container">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">Ray<span>Vita</span></div>
+                </a>
+
+                <nav>
+                    <ul>
+                        <li><a href="#features" class="nav-link">Features</a></li>
+                        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                        <li><a href="#demo" class="nav-link">Demo</a></li>
+                        <li><a href="#assessment" class="nav-link">Assessment</a></li>
+                        <li><a href="#download" class="nav-link">Download</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="lang-toggle" id="lang-toggle">
+                        <i class="fas fa-globe"></i>
+                        <span>EN</span>
+                    </button>
+                    <button class="mobile-toggle" id="mobile-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Language Dropdown -->
+    <div class="language-dropdown" id="language-dropdown">
+        <div class="language-option active" data-lang="en">
+            <div class="language-flag">
+                <img src="/api/placeholder/20/15" alt="English">
+            </div>
+            <div class="language-name">English</div>
+        </div>
+        <div class="language-option" data-lang="zh">
+            <div class="language-flag">
+                <img src="/api/placeholder/20/15" alt="Chinese">
+            </div>
+            <div class="language-name">中文</div>
+        </div>
+        <div class="language-option" data-lang="es">
+            <div class="language-flag">
+                <img src="/api/placeholder/20/15" alt="Spanish">
+            </div>
+            <div class="language-name">Español</div>
+        </div>
+        <div class="language-option" data-lang="fr">
+            <div class="language-flag">
+                <img src="/api/placeholder/20/15" alt="French">
+            </div>
+            <div class="language-name">Français</div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="mobile-menu-header">
+            <div class="logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#2563eb"/>
+                </svg>
+            </div>
+            <div class="logo-text">Ray<span>Vita</span></div>
+        </div>
+        <ul>
+            <li><a href="#features" class="mobile-nav-link">Features</a></li>
+            <li><a href="#how-it-works" class="mobile-nav-link">How It Works</a></li>
+            <li><a href="#demo" class="mobile-nav-link">Demo</a></li>
+            <li><a href="#assessment" class="mobile-nav-link">Assessment</a></li>
+            <li><a href="#download" class="mobile-nav-link">Download</a></li>
+        </ul>
+        <h3 style="margin-bottom: 15px; font-size: 1rem; color: var(--gray);">Languages</h3>
+        <div class="mobile-menu-lang">
+            <div class="mobile-lang-option active" data-lang="en">
+                <div class="language-flag">
+                    <img src="/api/placeholder/20/15" alt="English">
+                </div>
+                <div class="language-name">English</div>
+            </div>
+            <div class="mobile-lang-option" data-lang="zh">
+                <div class="language-flag">
+                    <img src="/api/placeholder/20/15" alt="Chinese">
+                </div>
+                <div class="language-name">中文</div>
+            </div>
+            <div class="mobile-lang-option" data-lang="es">
+                <div class="language-flag">
+                    <img src="/api/placeholder/20/15" alt="Spanish">
+                </div>
+                <div class="language-name">Español</div>
+            </div>
+            <div class="mobile-lang-option" data-lang="fr">
+                <div class="language-flag">
+                    <img src="/api/placeholder/20/15" alt="French">
+                </div>
+                <div class="language-name">Français</div>
+            </div>
+        </div>
+        <div class="mobile-menu-buttons">
+            <a href="#download" class="btn btn-primary">Download App</a>
+            <a href="#contact" class="btn btn-outline">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="slideUp">Your Personal <span>Health Digital Twin</span></h1>
+                    <h2 class="slideUp">Seamless monitoring • AI-powered • Complete health insights</h2>
+                    <p class="slideUp">The world's first smartphone app that builds your health digital twin, combining contactless bio-sensing with multimodal AI analysis to transform healthcare from reactive treatment to proactive prevention.</p>
+                    <div class="slideUp" style="margin-top: 30px;">
+                        <a href="#demo" class="btn btn-primary">Experience It Now</a>
+                        <a href="#how-it-works" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-container">
+                        <img src="/api/placeholder/500/800" alt="RayVita App Interface" class="hero-device slideDown">
+                        <div class="health-data-particle">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="health-data-particle">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="health-data-particle">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="health-data-particle">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">Key Features</h2>
+                <p class="fadeIn">Discover how RayVita revolutionizes personal health management through innovative technology</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3 class="feature-title">Contactless Monitoring</h3>
+                    <p>No wearable devices needed. RayVita uses your smartphone camera and built-in sensors to capture real-time heart rate, breathing patterns, micro-expressions, and more.</p>
+                </div>
+
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI Twin Modeling</h3>
+                    <p>Our multimodal algorithm integrates physiological, psychological, and social data to build a high-precision personal health digital twin that simulates your health dynamics.</p>
+                </div>
+
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Precision Intervention</h3>
+                    <p>Combined with medical knowledge graphs and user habits, AI dynamically generates personalized health action guides for sleep optimization, mood regulation, and more.</p>
+                </div>
+
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Predictive Analytics</h3>
+                    <p>Identify potential health risks before they become problems. Your digital twin continuously learns from your data to predict trends and provide early warnings.</p>
+                </div>
+
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="feature-title">Privacy Focused</h3>
+                    <p>Your health data belongs to you. All processing happens on-device with end-to-end encryption, ensuring your sensitive information remains private and secure.</p>
+                </div>
+
+                <div class="feature-card fadeIn">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync"></i>
+                    </div>
+                    <h3 class="feature-title">Continuous Learning</h3>
+                    <p>The more you use RayVita, the smarter it becomes. Your digital twin evolves with you, constantly improving its accuracy and personalized recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">Digital Twin Technology</h2>
+                <p class="fadeIn">Understanding the revolutionary approach behind your health digital twin</p>
+            </div>
+            <div class="how-it-works-container">
+                <div class="how-it-works-content">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 20px; color: var(--dark);">Breakthrough Health Twin Technology</h3>
+                    <p style="margin-bottom: 20px; color: var(--gray);">RayVita innovatively combines contactless bio-sensing with multimodal AI analysis to capture and analyze comprehensive health data, creating your personalized health digital twin. The system monitors physiological metrics, evaluates psychological states, and analyzes social behavior patterns in real-time to accurately predict health trends.</p>
+                    <p style="margin-bottom: 30px; color: var(--gray);">This transformative technology shifts health management from reactive response to proactive prevention, putting you in control of your health journey. Your digital twin continuously learns and adapts to your lifestyle habits, providing increasingly precise health intervention suggestions.</p>
+
+                    <div class="how-it-works-steps">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-info">
+                                <h3>Data Collection</h3>
+                                <p>Seamlessly gather biometric data through your smartphone without wearable devices</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-info">
+                                <h3>AI Processing</h3>
+                                <p>Advanced algorithms transform raw data into meaningful health insights</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-info">
+                                <h3>Twin Creation</h3>
+                                <p>Generate your digital health twin that mirrors your physiological and psychological state</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-info">
+                                <h3>Personalized Insights</h3>
+                                <p>Receive tailored recommendations and preventative health guidance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="how-it-works-visual">
+                    <div class="twin-visual">
+                        <div class="connection-line">
+                            <div class="connection-dot"></div>
+                        </div>
+
+                        <div class="human-model">
+                            <div class="human-outline">
+                                <img src="/api/placeholder/240/500" alt="Human Model">
+                            </div>
+                            <div class="human-detail">
+                                <strong>Heart Rate:</strong> 72 bpm
+                            </div>
+                            <div class="human-detail">
+                                <strong>Respiration:</strong> 14 breaths/min
+                            </div>
+                            <div class="human-detail">
+                                <strong>Stress Level:</strong> Low
+                            </div>
+                        </div>
+
+                        <div class="digital-twin">
+                            <div class="twin-outline">
+                                <img src="/api/placeholder/240/500" alt="Digital Twin">
+                            </div>
+                            <div class="twin-detail">
+                                <strong>Sleep Quality:</strong> 87%
+                            </div>
+                            <div class="twin-detail">
+                                <strong>Activity Level:</strong> Moderate
+                            </div>
+                            <div class="twin-detail">
+                                <strong>Health Risk:</strong> Very Low
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section class="interactive-demo" id="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">Interactive Experience</h2>
+                <p class="fadeIn">Try the RayVita experience with our interactive demo</p>
+            </div>
+            <div class="demo-container">
+                <div class="demo-phone fadeIn">
+                    <div class="demo-notch"></div>
+                    <div class="demo-screen">
+                        <div class="scan-interface" id="scan-interface">
+                            <div class="scan-header">
+                                <h3>RayVita Health Scan</h3>
+                                <p>Quick health assessment using your device's camera</p>
+                            </div>
+                            <div class="scan-body">
+                                <div class="scan-icon" id="scan-icon">
+                                    <svg width="70" height="70" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#2563eb" stroke-width="2" />
+                                        <circle cx="12" cy="12" r="4" stroke="#2563eb" stroke-width="2" />
+                                    </svg>
+                                    <div class="scan-ring"></div>
+                                </div>
+                                <button class="scan-button" id="scan-button">
+                                    <i class="fas fa-camera"></i> Start Scanning
+                                </button>
+                                <p class="scan-status" id="scan-status">Place your finger on the camera to begin</p>
+                            </div>
+                        </div>
+
+                        <div class="health-metrics" id="health-metrics">
+                            <div class="metrics-header">
+                                <h3>Health Analysis</h3>
+                                <p>Your real-time health metrics</p>
+                            </div>
+                            <div class="metrics-body">
+                                <div class="heart-rate-graph">
+                                    <div class="graph-title">Heart Rate</div>
+                                    <div class="graph-value">76 BPM</div>
+                                    <div class="graph-content">
+                                        <svg width="100%" height="100%" viewBox="0 0 200 70" preserveAspectRatio="none">
+                                            <path d="M0,35 L10,35 L20,15 L30,55 L40,20 L50,35 L60,15 L70,55 L80,20 L90,35 L100,15 L110,55 L120,20 L130,35 L140,15 L150,55 L160,20 L170,35 L180,15 L190,55 L200,35" stroke="#2563eb" stroke-width="2" fill="none" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-lungs"></i>
+                                        </div>
+                                        <div class="metric-name">Respiratory Rate</div>
+                                    </div>
+                                    <div class="metric-value">16 /min</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-brain"></i>
+                                        </div>
+                                        <div class="metric-name">Stress Index</div>
+                                    </div>
+                                    <div class="metric-value good-value">28%</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-bed"></i>
+                                        </div>
+                                        <div class="metric-name">Sleep Quality</div>
+                                    </div>
+                                    <div class="metric-value good-value">Good</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-smile"></i>
+                                        </div>
+                                        <div class="metric-name">Mood State</div>
+                                    </div>
+                                    <div class="metric-value good-value">Calm</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-heartbeat"></i>
+                                        </div>
+                                        <div class="metric-name">HRV</div>
+                                    </div>
+                                    <div class="metric-value">68 ms</div>
+                                </div>
+
+                                <div class="metric-item">
+                                    <div class="metric-info">
+                                        <div class="metric-icon">
+                                            <i class="fas fa-tint"></i>
+                                        </div>
+                                        <div class="metric-name">Blood Oxygen</div>
+                                    </div>
+                                    <div class="metric-value good-value">98%</div>
+                                </div>
+                            </div>
+                            <div class="metrics-footer">
+                                <button class="back-button" id="back-button">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-info">
+                    <h3 style="font-size: 1.6rem; margin-bottom: 15px; color: var(--dark);">Experience the Power of Your Digital Twin</h3>
+                    <p style="margin-bottom: 20px; color: var(--gray);">The RayVita app transforms your smartphone into a comprehensive health monitoring system. Through innovative technology, it captures vital health data without requiring any additional devices or wearables.</p>
+                    <p style="color: var(--gray);">Our interactive demo showcases just a small sample of the capabilities available in the full application.</p>
+
+                    <div class="demo-features">
+                        <div class="demo-feature">
+                            <div class="demo-feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="demo-feature-info">
+                                <h3>Just Your Smartphone</h3>
+                                <p>No additional devices or wearables needed - everything works through your existing smartphone</p>
+                            </div>
+                        </div>
+
+                        <div class="demo-feature">
+                            <div class="demo-feature-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="demo-feature-info">
+                                <h3>Real-Time Monitoring</h3>
+                                <p>Get instant feedback on your vital signs and health metrics whenever you need it</p>
+                            </div>
+                        </div>
+
+                        <div class="demo-feature">
+                            <div class="demo-feature-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="demo-feature-info">
+                                <h3>Comprehensive Analysis</h3>
+                                <p>View detailed breakdowns of your health data with personalized insights and recommendations</p>
+                            </div>
+                        </div>
+
+                        <div class="demo-feature">
+                            <div class="demo-feature-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="demo-feature-info">
+                                <h3>Private & Secure</h3>
+                                <p>Your health data remains on your device with end-to-end encryption for maximum privacy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Quiz Section -->
+    <section class="health-quiz" id="assessment">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">Health Assessment</h2>
+                <p class="fadeIn">Take a quick health assessment to receive personalized insights</p>
+            </div>
+            <div class="quiz-container">
+                <div class="quiz-card">
+                    <div class="quiz-steps">
+                        <div class="quiz-step active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Basics</div>
+                        </div>
+                        <div class="quiz-step" data-step="2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Lifestyle</div>
+                        </div>
+                        <div class="quiz-step" data-step="3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Wellness</div>
+                        </div>
+                        <div class="quiz-step" data-step="4">
+                            <div class="step-circle">4</div>
+                            <div class="step-label">Results</div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-content">
+                        <!-- Step 1 -->
+                        <div class="quiz-step-content active" data-step="1">
+                            <div class="quiz-question">
+                                <h3>How would you rate your overall health?</h3>
+                                <div class="quiz-options">
+                                    <label class="quiz-option">
+                                        <input type="radio" name="health_rating" value="excellent">
+                                        Excellent
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="health_rating" value="good">
+                                        Good
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="health_rating" value="average">
+                                        Average
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="health_rating" value="poor">
+                                        Poor
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <h3>How many hours of sleep do you typically get?</h3>
+                                <div class="quiz-range">
+                                    <input type="range" min="4" max="12" value="7" class="range-slider" id="sleep-range">
+                                    <div class="range-labels">
+                                        <span>4 hrs</span>
+                                        <span id="sleep-value">7 hrs</span>
+                                        <span>12 hrs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="quiz-step-content" data-step="2">
+                            <div class="quiz-question">
+                                <h3>How often do you exercise?</h3>
+                                <div class="quiz-options">
+                                    <label class="quiz-option">
+                                        <input type="radio" name="exercise_frequency" value="daily">
+                                        Daily
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="exercise_frequency" value="weekly">
+                                        2-3 times per week
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="exercise_frequency" value="occasionally">
+                                        Occasionally
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="exercise_frequency" value="rarely">
+                                        Rarely
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <h3>How would you describe your diet?</h3>
+                                <div class="quiz-options">
+                                    <label class="quiz-option">
+                                        <input type="radio" name="diet" value="very_healthy">
+                                        Very healthy
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="diet" value="mostly_healthy">
+                                        Mostly healthy
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="diet" value="somewhat_healthy">
+                                        Somewhat healthy
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="radio" name="diet" value="unhealthy">
+                                        Needs improvement
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="quiz-step-content" data-step="3">
+                            <div class="quiz-question">
+                                <h3>How would you rate your stress level?</h3>
+                                <div class="quiz-range">
+                                    <input type="range" min="1" max="10" value="5" class="range-slider" id="stress-range">
+                                    <div class="range-labels">
+                                        <span>Low</span>
+                                        <span id="stress-value">5</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-question">
+                                <h3>Do you experience any of these symptoms regularly?</h3>
+                                <div class="quiz-options" style="grid-template-columns: repeat(2, 1fr);">
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="fatigue">
+                                        Fatigue
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="headaches">
+                                        Headaches
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="digestive">
+                                        Digestive issues
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="mood_swings">
+                                        Mood swings
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="insomnia">
+                                        Insomnia
+                                    </label>
+                                    <label class="quiz-option">
+                                        <input type="checkbox" name="symptoms" value="none">
+                                        None of these
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 (Results) -->
+                        <div class="quiz-step-content" data-step="4">
+                            <div class="quiz-results">
+                                <div class="results-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3 class="results-title">Assessment Complete!</h3>
+                                <p class="results-subtitle">Based on your responses, we've calculated your health score</p>
+
+                                <div class="score-label">Your Health Score</div>
+                                <div class="results-score">78</div>
+
+                                <p style="margin-bottom: 30px;">Your score indicates that you're doing well in many areas, but there's room for improvement. Download the RayVita app for a more comprehensive analysis and personalized recommendations.</p>
+
+                                <a href="#download" class="btn btn-primary">Get Full Report</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-footer">
+                        <button class="prev-btn" id="prev-btn" style="visibility: hidden;">Previous</button>
+                        <button class="next-btn" id="next-btn">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">What Users Say</h2>
+                <p class="fadeIn">Real experiences from people using RayVita in their daily lives</p>
+            </div>
+            <div class="testimonials-container">
+                <div class="testimonial-arrow arrow-prev" id="prev-testimonial">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+
+                <div class="testimonials-track" id="testimonials-track">
+                    <div class="testimonial">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                RayVita has changed the way I think about my health. The ability to track so many metrics without any wearable devices is amazing. I've been able to make meaningful changes to my lifestyle based on the insights.
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="/api/placeholder/60/60" alt="Sarah Johnson">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>Fitness Coach, 34</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                As someone with chronic health issues, having continuous monitoring through my phone has been a game-changer. The early warning system alerted me to potential problems twice this year before they became serious.
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="/api/placeholder/60/60" alt="Michael Chen">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Michael Chen</h4>
+                                    <p>Software Engineer, 42</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                The sleep insights alone have been worth it. I've struggled with insomnia for years, but the personalized recommendations have helped me improve my sleep quality dramatically in just a few weeks.
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="/api/placeholder/60/60" alt="Emily Rodriguez">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Emily Rodriguez</h4>
+                                    <p>Teacher, 29</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-arrow arrow-next" id="next-testimonial">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+                <div class="testimonial-nav" id="testimonial-nav">
+                    <div class="nav-dot active" data-index="0"></div>
+                    <div class="nav-dot" data-index="1"></div>
+                    <div class="nav-dot" data-index="2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-container">
+                <h2 class="fadeIn">Start Your Health Journey Today</h2>
+                <p class="fadeIn">Experience the future of health monitoring with RayVita. Download the app now and take control of your wellbeing.</p>
+                <div class="download-buttons">
+                    <a href="#" class="app-btn">
+                        <i class="fab fa-apple"></i>
+                        <div class="app-btn-text">
+                            <span>Download on the</span>
+                            <strong>App Store</strong>
+                        </div>
+                    </a>
+                    <a href="#" class="app-btn">
+                        <i class="fab fa-google-play"></i>
+                        <div class="app-btn-text">
+                            <span>Get it on</span>
+                            <strong>Google Play</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="fadeIn">Frequently Asked Questions</h2>
+                <p class="fadeIn">Get answers to common questions about RayVita</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How accurate is the health monitoring without wearable devices?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RayVita uses advanced photoplethysmography (PPG) and computer vision algorithms to achieve clinical-grade accuracy for many metrics. Our technology has been validated against medical-grade equipment with a correlation of over 95% for heart rate monitoring and over 90% for respiratory rate. For more specialized metrics, the app clearly indicates confidence levels and may suggest confirmatory measurements when needed.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Is my health data private and secure?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. Your privacy is our top priority. All health data processing happens on your device, and any data that is stored in the cloud is end-to-end encrypted. You have complete control over what data is collected and can delete it at any time. RayVita does not sell your data to third parties and complies with all major health data privacy regulations including HIPAA and GDPR.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How often should I use the app for best results?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>For optimal results, we recommend daily check-ins that take just 60 seconds. However, even using the app 2-3 times per week provides valuable insights. The more you use RayVita, the more accurate your digital twin becomes, and the more personalized your recommendations will be. The app includes unobtrusive reminders that you can customize to fit your schedule.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Can RayVita replace medical devices or doctor visits?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RayVita is designed as a complementary health tool, not a replacement for professional medical care. While our technology provides valuable insights into your health trends and can detect potential issues early, it should be used alongside regular medical check-ups. Always consult healthcare professionals for medical advice, diagnosis, or treatment. RayVita can provide useful data to share with your healthcare provider to enhance your care.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Will RayVita work with my smartphone?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RayVita is compatible with most modern smartphones. For iOS, we support iPhone 8 and newer running iOS 14+. For Android, we support devices with Android 9.0+ that have a camera with at least 8MP resolution. Some advanced features may require specific sensors that are not available on all devices. The app will automatically detect your device capabilities and adjust functionality accordingly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ffffff"/>
+                            </svg>
+                        </div>
+                        <div class="footer-logo-text">Ray<span>Vita</span></div>
+                    </div>
+                    <p>RayVita is pioneering the future of preventative health through innovative mobile technology that turns your smartphone into a comprehensive health monitoring system.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
+                        <li><a href="#demo"><i class="fas fa-chevron-right"></i> Interactive Demo</a></li>
+                        <li><a href="#assessment"><i class="fas fa-chevron-right"></i> Health Assessment</a></li>
+                        <li><a href="#download"><i class="fas fa-chevron-right"></i> Download</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Documentation</a></li>
+                        <li><a href="#faq"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Research</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Innovation Drive, San Francisco, CA 94107, USA</p>
+                    <p><i class="fas fa-phone-alt"></i> +1 (123) 456-7890</p>
+                    <p><i class="fas fa-envelope"></i> support@rayvita.com</p>
+                </div>
+
+                <div class="footer-newsletter">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to our newsletter to receive health tips and updates about RayVita.</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Your email address">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Heartvia. RayVita - Health Digital Twin App. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Chat -->
+    <div class="floating-chat" id="chat-toggle">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                <h3>RayVita Assistant</h3>
+            </div>
+            <button class="chat-close" id="chat-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-message bot-message">
+                <div class="message-content">
+                    Hello! I'm your RayVita health assistant. How can I help you today?
+                </div>
+                <div class="message-time">Just now</div>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
+            <button class="chat-send" id="chat-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Header Scroll Effect
+        const header = document.getElementById('header');
+        const headerContainer = header.querySelector('.header-container');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                headerContainer.style.padding = '10px 0';
+            } else {
+                header.classList.remove('scrolled');
+                headerContainer.style.padding = '20px 0';
+            }
+        });
+
+        // Language Dropdown
+        const langToggle = document.getElementById('lang-toggle');
+        const langDropdown = document.getElementById('language-dropdown');
+        const langOptions = document.querySelectorAll('.language-option');
+        const mobileLangOptions = document.querySelectorAll('.mobile-lang-option');
+        const langText = langToggle.querySelector('span');
+
+        langToggle.addEventListener('click', () => {
+            langDropdown.classList.toggle('active');
+        });
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.dataset.lang;
+                langText.textContent = lang.toUpperCase();
+
+                langOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                mobileLangOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                });
+
+                option.classList.add('active');
+                document.querySelector(`.mobile-lang-option[data-lang="${lang}"]`).classList.add('active');
+
+                langDropdown.classList.remove('active');
+
+                // Set language
+                setLanguage(lang);
+            });
+        });
+
+        mobileLangOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.dataset.lang;
+                langText.textContent = lang.toUpperCase();
+
+                langOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                mobileLangOptions.forEach(opt => {
+                    opt.classList.remove('active');
+                });
+
+                option.classList.add('active');
+                document.querySelector(`.language-option[data-lang="${lang}"]`).classList.add('active');
+
+                // Set language
+                setLanguage(lang);
+            });
+        });
+
+        // Example language setting function (would be expanded with actual translations)
+        function setLanguage(lang) {
+            console.log(`Language set to: ${lang}`);
+            // In a real implementation, this would update text content based on language
+        }
+
+        // Close language dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!langToggle.contains(e.target) && !langDropdown.contains(e.target)) {
+                langDropdown.classList.remove('active');
+            }
+        });
+
+        // Mobile Menu
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const overlay = document.getElementById('overlay');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        overlay.addEventListener('click', closeMobileMenu);
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animations on Scroll
+        const animatedElements = document.querySelectorAll('.fadeIn, .slideUp, .slideDown, .slideLeft, .slideRight');
+
+        const animateOnScroll = () => {
+            const triggerBottom = window.innerHeight * 0.8;
+
+            animatedElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+
+                if (elementTop < triggerBottom) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translate(0)';
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // Initial check
+
+        // Animate elements in How It Works section
+        const stepItems = document.querySelectorAll('.step-item');
+        const humanDetails = document.querySelectorAll('.human-detail');
+        const twinDetails = document.querySelectorAll('.twin-detail');
+        const demoFeatures = document.querySelectorAll('.demo-feature');
+
+        const animateElements = () => {
+            const triggerBottom = window.innerHeight * 0.8;
+
+            stepItems.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                }
+            });
+
+            humanDetails.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                }
+            });
+
+            twinDetails.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                }
+            });
+
+            demoFeatures.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateElements);
+        animateElements(); // Initial check
+
+        // Demo Phone Interaction
+        const scanButton = document.getElementById('scan-button');
+        const scanInterface = document.getElementById('scan-interface');
+        const healthMetrics = document.getElementById('health-metrics');
+        const scanStatus = document.getElementById('scan-status');
+        const backButton = document.getElementById('back-button');
+        const scanIcon = document.getElementById('scan-icon');
+
+        scanButton.addEventListener('click', () => {
+            scanIcon.classList.add('scanning');
+            scanStatus.textContent = 'Scanning...';
+
+            setTimeout(() => {
+                scanStatus.textContent = 'Analyzing biometrics...';
+
+                setTimeout(() => {
+                    scanStatus.textContent = 'Building health model...';
+
+                    setTimeout(() => {
+                        scanInterface.style.transform = 'translateX(-100%)';
+                        healthMetrics.style.transform = 'translateX(0)';
+                        scanIcon.classList.remove('scanning');
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        });
+
+        backButton.addEventListener('click', () => {
+            healthMetrics.style.transform = 'translateX(100%)';
+            scanInterface.style.transform = 'translateX(0)';
+            scanStatus.textContent = 'Place your finger on the camera to begin';
+        });
+
+        // Health Quiz Interaction
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const quizSteps = document.querySelectorAll('.quiz-step');
+        const quizStepContents = document.querySelectorAll('.quiz-step-content');
+        let currentStep = 1;
+
+        function updateQuizStep() {
+            quizSteps.forEach(step => {
+                step.classList.remove('active');
+                if (parseInt(step.dataset.step) === currentStep) {
+                    step.classList.add('active');
+                }
+                if (parseInt(step.dataset.step) < currentStep) {
+                    step.classList.add('done');
+                } else {
+                    step.classList.remove('done');
+                }
+            });
+
+            quizStepContents.forEach(content => {
+                content.classList.remove('active');
+                if (parseInt(content.dataset.step) === currentStep) {
+                    content.classList.add('active');
+                }
+            });
+
+            if (currentStep === 1) {
+                prevBtn.style.visibility = 'hidden';
+            } else {
+                prevBtn.style.visibility = 'visible';
+            }
+
+            if (currentStep === 4) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+                nextBtn.textContent = currentStep === 3 ? 'Submit' : 'Next';
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateQuizStep();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < 4) {
+                currentStep++;
+                updateQuizStep();
+            }
+        });
+
+        // Range slider updates
+        const sleepRange = document.getElementById('sleep-range');
+        const sleepValue = document.getElementById('sleep-value');
+        const stressRange = document.getElementById('stress-range');
+        const stressValue = document.getElementById('stress-value');
+
+        sleepRange.addEventListener('input', () => {
+            sleepValue.textContent = `${sleepRange.value} hrs`;
+        });
+
+        stressRange.addEventListener('input', () => {
+            stressValue.textContent = stressRange.value;
+        });
+
+        // Testimonial Carousel
+        const testimonialTrack = document.getElementById('testimonials-track');
+        const prevTestimonial = document.getElementById('prev-testimonial');
+        const nextTestimonial = document.getElementById('next-testimonial');
+        const testimonialDots = document.querySelectorAll('.nav-dot');
+        let testimonialIndex = 0;
+
+        function updateTestimonial() {
+            testimonialTrack.style.transform = `translateX(-${testimonialIndex * 100}%)`;
+
+            testimonialDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === testimonialIndex);
+            });
+        }
+
+        prevTestimonial.addEventListener('click', () => {
+            testimonialIndex = Math.max(0, testimonialIndex - 1);
+            updateTestimonial();
+        });
+
+        nextTestimonial.addEventListener('click', () => {
+            testimonialIndex = Math.min(2, testimonialIndex + 1);
+            updateTestimonial();
+        });
+
+        testimonialDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                testimonialIndex = index;
+                updateTestimonial();
+            });
+        });
+
+        // Auto-rotate testimonials
+        let testimonialInterval = setInterval(() => {
+            testimonialIndex = (testimonialIndex + 1) % 3;
+            updateTestimonial();
+        }, 5000);
+
+        // Pause auto-rotation when user interacts
+        const testimonialContainer = document.querySelector('.testimonials-container');
+        testimonialContainer.addEventListener('mouseenter', () => {
+            clearInterval(testimonialInterval);
+        });
+
+        testimonialContainer.addEventListener('mouseleave', () => {
+            testimonialInterval = setInterval(() => {
+                testimonialIndex = (testimonialIndex + 1) % 3;
+                updateTestimonial();
+            }, 5000);
+        });
+
+        // FAQ Accordions
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = question.classList.contains('active');
+
+                // Close all FAQs
+                faqQuestions.forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
+
+                // Open clicked FAQ if it was closed
+                if (!isActive) {
+                    question.classList.add('active');
+                    answer.classList.add('active');
+                }
+            });
+        });
+
+        // Chat Functionality
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatClose = document.getElementById('chat-close');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const chatBody = document.getElementById('chat-body');
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.add('active');
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+        });
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+
+            // Add user message
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.classList.add('chat-message', 'user-message');
+            userMessageDiv.innerHTML = `
+                <div class="message-content">${message}</div>
+                <div class="message-time">Just now</div>
+            `;
+            chatBody.appendChild(userMessageDiv);
+
+            // Clear input
+            chatInput.value = '';
+
+            // Scroll to bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Simulate bot response (would be replaced with actual API call)
+            setTimeout(() => {
+                let botResponse = 'Thank you for your message! I\'ll help you with that. For more detailed assistance, please try downloading the full RayVita app.';
+
+                if (message.toLowerCase().includes('app')) {
+                    botResponse = 'You can download the RayVita app from the App Store or Google Play. Just click the Download button at the top of this page!';
+                } else if (message.toLowerCase().includes('accuracy') || message.toLowerCase().includes('reliable')) {
+                    botResponse = 'RayVita achieves clinical-grade accuracy for many metrics, with validation against medical equipment showing over 95% correlation for heart rate monitoring.';
+                } else if (message.toLowerCase().includes('cost') || message.toLowerCase().includes('price')) {
+                    botResponse = 'RayVita offers a free basic version with core features, and a premium subscription at $4.99/month that unlocks advanced analytics and personalized coaching.';
+                }
+
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.classList.add('chat-message', 'bot-message');
+                botMessageDiv.innerHTML = `
+                    <div class="message-content">${botResponse}</div>
+                    <div class="message-time">Just now</div>
+                `;
+                chatBody.appendChild(botMessageDiv);
+
+                // Scroll to bottom
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 1000);
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Newsletter Form
+        const newsletterForm = document.querySelector('.newsletter-form');
+
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = newsletterForm.querySelector('.newsletter-input').value;
+
+            if (email) {
+                alert('Thank you for subscribing to our newsletter!');
+                newsletterForm.reset();
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        });
+
+        // Twin animation
+        function animateTwin() {
+            const humanModel = document.querySelector('.human-model');
+            const digitalTwin = document.querySelector('.digital-twin');
+
+            // Subtle floating animation
+            let iteration = 0;
+            setInterval(() => {
+                iteration += 0.02;
+
+                if (humanModel && digitalTwin) {
+                    humanModel.style.transform = `rotateY(-15deg) translateZ(30px) translateY(${Math.sin(iteration) * 5}px)`;
+                    digitalTwin.style.transform = `rotateY(15deg) translateZ(-30px) translateX(100px) translateY(${Math.sin(iteration + Math.PI) * 5}px)`;
+                }
+            }, 30);
+        }
+
+        animateTwin();
+
+        // Make quiz options interactive
+        const quizOptions = document.querySelectorAll('.quiz-option');
+
+        quizOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const input = option.querySelector('input');
+
+                // For radio buttons
+                if (input.type === 'radio') {
+                    const name = input.name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                        radio.closest('.quiz-option').classList.remove('selected');
+                    });
+                }
+
+                // Toggle selected class
+                option.classList.toggle('selected');
+            });
+        });
+    </script>
