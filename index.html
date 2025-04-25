@@ -546,6 +546,74 @@
             opacity: 0.8;
         }
 
+        .how-it-works-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.how-it-works-content {
+    flex: 1;
+    min-width: 300px;
+    padding-right: 5px;
+}
+
+.how-it-works-visual {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.twin-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.human-outline, .twin-outline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.human-outline img, .twin-outline img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.human-detail, .twin-detail {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.connection-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--gray);
+    transform: translate(-50%, -50%);
+}
+
+.connection-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--dark);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
         .human-outline, .twin-outline {
             width: 100%;
             height: 100%;
@@ -2608,7 +2676,7 @@
 
                         <div class="human-model">
                             <div class="human-outline">
-                                <img src="https://github.com/Nickory/RayVita_website/api/placeholder/60/64.jpg" alt="Human Model">
+                                <img src="https://nickory.github.io/RayVita_website/api/placeholder/60/64.jpg" alt="Human Model">
                             </div>
                             <div class="human-detail">
                                 <strong>Heart Rate:</strong> 72 bpm
@@ -2623,7 +2691,7 @@
 
                         <div class="digital-twin">
                             <div class="twin-outline">
-                                <img src="https://github.com/Nickory/RayVita_website/api/placeholder/60/63.jpg" alt="Digital Twin">
+                                <img src="https://nickory.github.io/RayVita_website/api/placeholder/60/63.jpg" alt="Digital Twin">
                             </div>
                             <div class="twin-detail">
                                 <strong>Sleep Quality:</strong> 87%
@@ -2976,7 +3044,9 @@
                                 <p class="results-subtitle">Based on your responses, we've calculated your health score</p>
 
                                 <div class="score-label">Your Health Score</div>
-                                <div class="results-score">78</div>
+
+
+                                <div class="results-score">70</div>
 
                                 <p style="margin-bottom: 30px;">Your score indicates that you're doing well in many areas, but there's room for improvement. Download the RayVita app for a more comprehensive analysis and personalized recommendations.</p>
 
@@ -2993,6 +3063,20 @@
             </div>
         </div>
     </section>
+<script>
+    // 生成随机分数并设置到页面元素中
+    try {
+        const scoreElement = document.getElementById("health-score");
+        if (!scoreElement) {
+            throw new Error('Element with id "health-score" not found.');
+        }
+
+        const scoreValue = Math.floor(Math.random() * 26) + 70;
+        scoreElement.textContent = scoreValue;
+    } catch (error) {
+        console.error('Error setting health score:', error);
+    }
+</script>
 
     <!-- Testimonials Section -->
     <section class="testimonials" id="testimonials">
@@ -3205,7 +3289,7 @@
 
                 <div class="footer-contact">
                     <h3>Contact Us</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> 123 Innovation Drive, San Francisco, CA 94107, USA</p>
+                    <p><i class="fas fa-map-marker-alt"></i> PKU (PuKou University) NingSix road</p>
                     <p><i class="fas fa-phone-alt"></i> +1 (123) 456-7890</p>
                     <p><i class="fas fa-envelope"></i> support@rayvita.com</p>
                 </div>
